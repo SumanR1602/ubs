@@ -1,7 +1,11 @@
-from langchain.chat_models import init_chat_model
+from langchain.chat_models import AzureChatOpenAI  
 from deepagents import create_deep_agent
 import os
-os.environ["ANTHROPIC_API_KEY"] = "sk-ant-..."  # 
+
+# Set your Azure OpenAI credentials
+os.environ["AZURE_OPENAI_API_KEY"] = "your-azure-openai-key"
+os.environ["AZURE_OPENAI_ENDPOINT"] = "https://your-resource-name.openai.azure.com/"
+os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"] = "your-deployment-name"  # This should match your deployment name on Azure
 
 def read_log_file(file_path: str) -> str:
     """
@@ -16,10 +20,16 @@ def read_log_file(file_path: str) -> str:
     except Exception as e:
         return f"Error reading file: {str(e)}"
 
+# Create an instance of AzureChatOpenAI
+model = AzureChatOpenAI(
+    openai_api_key=os.environ["AZURE_OPENAI_API_KEY"],
+    openai_api_base=os.environ["AZURE_OPENAI_ENDPOINT"],
+    deployment_name=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],
+    openai_api_type="azure",
+    openai_api_version="2023-05-15"  # or the version that matches your Azure deployment
+)
 
-# Make sure your Anthropic API key is set in your environment!
-model = init_chat_model("claude-sonnet-4-5-20250929")
-instruction="You are an expert log analyzer. Analyze log files and provide insights."
+instruction = "You are an expert log analyzer. Analyze log files and provide insights."
 
 agent = create_deep_agent(
     model=model,
