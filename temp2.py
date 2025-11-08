@@ -1,7 +1,7 @@
 from langchain.chat_models import init_chat_model
 from deepagents import create_deep_agent
 import os
-
+os.environ["ANTHROPIC_API_KEY"] = "sk-ant-..."  # 
 
 def read_log_file(file_path: str) -> str:
     """
